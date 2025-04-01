@@ -110,7 +110,11 @@ impl SendHandler {
                 }
             }
         };
-
+        trace!(
+            "IRP outbound: destination={} packet=0x{}",
+            &socket_addr,
+            hex::encode(encoded_packet)
+        );
         socket
             .send_to(encoded_packet, socket_addr)
             .await

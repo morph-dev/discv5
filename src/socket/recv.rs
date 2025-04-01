@@ -136,6 +136,11 @@ impl RecvHandler {
         length: usize,
         recv_buffer: &[u8; MAX_PACKET_SIZE],
     ) {
+        trace!(
+            "IRP inbound: origin={} packet=0x{}",
+            &src_address,
+            hex::encode(&recv_buffer[..length])
+        );
         // Zero out the flowinfo and scope id of v6 socket addresses.
         //
         // Flowinfo contains both the Flow label and Traffic Class. These should be ignored by

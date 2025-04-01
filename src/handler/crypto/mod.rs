@@ -28,6 +28,7 @@ use enr::{
 };
 use hkdf::Hkdf;
 use std::convert::TryFrom;
+use tracing::trace;
 
 mod ecdh;
 
@@ -190,6 +191,13 @@ pub(crate) fn decrypt_message(
     msg: &[u8],
     aad: &[u8],
 ) -> Result<Vec<u8>, Error> {
+    trace!(
+        "IRP decrypt: key=0x{} nonce={} message={} authenticated_data={}",
+        hex::encode(key),
+        hex::encode(message_nonce),
+        hex::encode(msg),
+        hex::encode(aad),
+    );
     if msg.len() < 16 {
         return Err(Error::DecryptionFailed(
             "Message not long enough to contain a MAC".into(),
@@ -212,6 +220,13 @@ pub(crate) fn encrypt_message(
     msg: &[u8],
     aad: &[u8],
 ) -> Result<Vec<u8>, Error> {
+    trace!(
+        "IRP encrypt: key=0x{} nonce={} message={} authenticated_data={}",
+        hex::encode(key),
+        hex::encode(message_nonce),
+        hex::encode(msg),
+        hex::encode(aad),
+    );
     let aead = Aes128Gcm::new(GenericArray::from_slice(key));
     let payload = Payload { msg, aad };
     aead.encrypt(GenericArray::from_slice(&message_nonce), payload)
